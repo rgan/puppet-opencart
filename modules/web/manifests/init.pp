@@ -44,5 +44,21 @@ file { "/var/www/config.php" :
   content => template("web/config.php.erb"),
 }
 
+file { "/var/www/system/cache" :
+  owner => 'www-data',
+  require => Exec["upload-opencart"] 
+}
+
+file { "/var/www/system/logs" :
+  owner => 'www-data',
+  require => Exec["upload-opencart"]   
+}
+
+file { "/var/www/image" :
+  owner => 'www-data',
+  recurse => true,
+  require => Exec["upload-opencart"]   
+}
+
 Exec["download-opencart"] -> Exec["unzip-opencart"] -> Exec["upload-opencart"] -> Exec["setup-db-schema"] -> Exec["remove-install"]
 }
