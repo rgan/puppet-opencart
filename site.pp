@@ -2,14 +2,16 @@ $oc_dbhost = 'localhost'
 $oc_webhost = 'localhost'
 $oc_dbname = 'opencart'
 $oc_dbuser = 'opencart'
-$oc_dbpwd = 'opncrtpwd' 
+$oc_dbpwd = 'opncrtpwd'
+$db_rootpwd = 'password' 
 
 node default {
   
   class { 'db' : 
     dbname => $oc_dbname, 
     dbuser => $oc_dbuser,
-    dbpwd => $oc_dbpwd
+    dbpwd => $oc_dbpwd,
+    dbrootpwd => $db_rootpwd
   }
   
   class { 'web' :  

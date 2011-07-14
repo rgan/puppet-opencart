@@ -1,5 +1,6 @@
-class db($dbname, $dbuser, $dbpwd) {
+class db($dbname, $dbuser, $dbpwd, $dbrootpwd) {
   
+   # todo: set the root password
    package { "mysql-server" : ensure => installed }
    
    file {"/etc/mysql/conf.d/allow_external.cnf" :
@@ -18,14 +19,14 @@ class db($dbname, $dbuser, $dbpwd) {
     }
 
     exec { "create-db" : 
-      unless => "/usr/bin/mysql -uroot $dbname",
-      command => "/usr/bin/mysql -uroot -e 'create database $dbname;'",
+      unless => "/usr/bin/mysql -uroot -p$dbrootpwd $dbname",
+      command => "/usr/bin/mysql -uroot -p$dbrootpwd -e 'create database $dbname;'",
       require => Service["mysql"]
     }
 
     exec { "grant-db" :
         unless => "/usr/bin/mysql -u$dbuser -p$dbpwd $dbname",
-        command => "/usr/bin/mysql -uroot -e \"grant all on $dbname.* to $dbname@'%' identified by '$dbpwd';\"",
+        command => "/usr/bin/mysql -uroot -p$dbrootpwd -e \"grant all on $dbname.* to $dbname@'%' identified by '$dbpwd';\"",
 	      require => Exec["create-db"]
       }
 }
